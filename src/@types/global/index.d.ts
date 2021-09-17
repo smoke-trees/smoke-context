@@ -1,11 +1,11 @@
-import { Context } from "../../context";
+import { ContextType } from "../../context";
 
-export { }
+export { };
 
 declare global {
   namespace Express {
     export interface Request {
-      context: Context
+      context: ContextType
     }
   }
 }

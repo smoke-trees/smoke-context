@@ -1,6 +1,6 @@
-import { NextFunction, Request, RequestHandler, Response } from "express";
-import * as uuid from 'uuid'
-import NodeFetch, { RequestInit, RequestInfo, Headers, HeaderInit } from 'node-fetch'
+import * as express from "express";
+import NodeFetch, { HeaderInit, RequestInfo, RequestInit } from 'node-fetch';
+import * as uuid from 'uuid';
 
 declare global {
   namespace SmokeContext {
@@ -8,41 +8,28 @@ declare global {
   }
   namespace express {
     export interface Request {
-      context: Context
+      context: ContextType
     }
   }
 }
 
-interface KeyValuePair extends SmokeContext.KeyValuePair {
+export interface KeyValuePair extends SmokeContext.KeyValuePair {
 }
 
 export interface ContextOptions {
   /** Header name to extract the tracing id from*/
-  headerName: string;
+  headerName?: string;
   extractKeyValuePairs?: () => KeyValuePair;
   generateTraceId?: () => string;
 }
 
-export interface Context {
+export interface ContextType {
   traceId: string;
   values: KeyValuePair
   headerName: string;
 }
 
-export function Context(options: ContextOptions): RequestHandler {
-  const generateTraceId = options.generateTraceId ?? uuid.v4
-  const extractKeyValuePairs = options.extractKeyValuePairs ?? function () { return {} }
-  return function contextHander(req: Request, res: Response, next: NextFunction) {
-    const headerName = options.headerName ?? 'SMK-TRACE-ID'
-    req.context = {
-      traceId: (req.get(headerName) ?? generateTraceId()),
-      values: extractKeyValuePairs,
-      headerName: headerName
-    }
-  }
-}
-
-export function fetch(url: RequestInfo, context?: Context, init?: RequestInit) {
+export function fetch(url: RequestInfo, context?: ContextType, init?: RequestInit) {
   const headers: HeaderInit = {
     ...init?.headers
   }
@@ -55,4 +42,18 @@ export function fetch(url: RequestInfo, context?: Context, init?: RequestInit) {
     ...init,
     headers: headers
   })
+}
+
+export default function Context(options: ContextOptions): express.RequestHandler {
+  const generateTraceId = options.generateTraceId ?? uuid.v4
+  const extractKeyValuePairs = options.extractKeyValuePairs ?? function () { return {} }
+  return function (req, res, next) {
+    const headerName = options.headerName ?? 'SMK-TRACE-ID'
+    req.context = {
+      traceId: (req.get(headerName) ?? generateTraceId()),
+      values: extractKeyValuePairs(),
+      headerName: headerName
+    }
+    next()
+  } as express.RequestHandler
 }

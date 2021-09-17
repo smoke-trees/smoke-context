@@ -1,15 +1,16 @@
 {
   "name": "@smoke-trees/smoke-context",
-  "version": "1.1.3",
+  "version": "1.1.10",
   "description": "",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/context.js",
+  "types": "dist/context.d.ts",
   "files": [
     "/dist"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc"
+    "build": "tsc",
+    "prepare": "tsc"
   },
   "author": "SmokeTrees",
   "license": "MIT",
