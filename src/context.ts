@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import * as uuid from 'uuid'
-import NodeFetch, { RequestInit, RequestInfo } from 'node-fetch'
+import NodeFetch, { RequestInit, RequestInfo, Headers, HeaderInit } from 'node-fetch'
 
 declare global {
   namespace SmokeContext {
@@ -43,11 +43,13 @@ export function Context(options: ContextOptions) {
 }
 
 export function fetch(url: RequestInfo, context?: Context, init?: RequestInit) {
-  const headers: { [key: string]: string } = {
-    ...init?.headers,
+  const headers: HeaderInit = {
+    ...init?.headers
   }
   if (context) {
-    headers[context.headerName] = context.traceId
+    if (typeof (headers) === 'object') {
+      (headers as any)[context.headerName] = context.traceId
+    }
   }
   NodeFetch(url, {
     ...init,

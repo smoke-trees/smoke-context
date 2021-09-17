@@ -1,6 +1,6 @@
 {
   "name": "@smoke-trees/smoke-context",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "dist/index.js",
   "types": "index.d.ts",
@@ -15,6 +15,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/express": "^4.17.13",
+    "@types/node-fetch": "^2.5.3",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
     "eslint": "^7.32.0",
@@ -23,8 +24,7 @@
   },
   "dependencies": {
     "@types/uuid": "^8.3.1",
-    "node-fetch": "^3.0.0",
+    "node-fetch": "^2.6.2",
     "uuid": "^8.3.2"
-  },
-  "type": "module"
+  }
 }
