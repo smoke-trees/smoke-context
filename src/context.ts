@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, RequestHandler, Response } from "express";
 import * as uuid from 'uuid'
 import NodeFetch, { RequestInit, RequestInfo, Headers, HeaderInit } from 'node-fetch'
 
@@ -29,10 +29,10 @@ export interface Context {
   headerName: string;
 }
 
-export function Context(options: ContextOptions) {
+export function Context(options: ContextOptions): RequestHandler {
   const generateTraceId = options.generateTraceId ?? uuid.v4
   const extractKeyValuePairs = options.extractKeyValuePairs ?? function () { return {} }
-  return async function contextHander(req: Request, res: Response, next: NextFunction) {
+  return function contextHander(req: Request, res: Response, next: NextFunction) {
     const headerName = options.headerName ?? 'SMK-TRACE-ID'
     req.context = {
       traceId: (req.get(headerName) ?? generateTraceId()),
