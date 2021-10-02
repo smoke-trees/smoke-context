@@ -38,7 +38,7 @@ export function fetch(url: RequestInfo, context?: ContextType, init?: RequestIni
       (headers as any)[context.headerName] = context.traceId
     }
   }
-  NodeFetch(url, {
+  return NodeFetch(url, {
     ...init,
     headers: headers
   })
