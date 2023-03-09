@@ -19,7 +19,6 @@ const model = async (value: number) => {
 const moreWork = async () => {
   const context1 = ContextProvider.getContext()
   fetch('https://meribachat.in', undefined, {})
-  console.log('2', context1)
 }
 
 app.get('/', async (req, res) => {

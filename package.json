@@ -1,6 +1,6 @@
 {
   "name": "@smoke-trees/smoke-context",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "",
   "main": "dist/context.js",
   "types": "dist/context.d.ts",
