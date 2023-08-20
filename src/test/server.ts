@@ -24,6 +24,17 @@ app.get('/', async (req, res) => {
   res.send(val.toString())
 })
 
+async function test() {
+  const test = { a: 1 }
+
+  ContextProvider.setContext(test)
+
+  const context1 = ContextProvider.getContext()
+  await model(1)
+}
+
+test()
+
 app.listen(8080, () => {
   console.log('server start')
 })

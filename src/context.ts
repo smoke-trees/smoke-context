@@ -5,7 +5,6 @@ import * as uuid from 'uuid'
 
 /* eslint-disable */
 declare global {
-
   namespace express {
     export interface Request {
       context: ContextType
@@ -51,6 +50,10 @@ class ContextProviderClass {
 
   getContext() {
     return this.asyncLocalStorage.getStore() as ContextType
+  }
+
+  setContext(store: any) {
+    return this.asyncLocalStorage.enterWith(store)
   }
 
   getMiddleware(options: ContextOptions) {
