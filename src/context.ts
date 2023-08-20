@@ -1,26 +1,25 @@
-import * as express from "express";
-import NodeFetch, { HeaderInit, RequestInfo, RequestInit } from 'node-fetch';
-import * as uuid from 'uuid';
 import { AsyncLocalStorage } from 'async_hooks'
+import express, { Request } from 'express'
+import NodeFetch, { HeaderInit, RequestInfo, RequestInit, Response } from 'node-fetch'
+import * as uuid from 'uuid'
 
+/* eslint-disable */
 declare global {
-  namespace SmokeContext {
-    type KeyValuePair = {}
-  }
+
   namespace express {
     export interface Request {
       context: ContextType
     }
   }
 }
+/* eslint-enable */
 
-export interface KeyValuePair extends SmokeContext.KeyValuePair {
-}
+export type KeyValuePair = { [key: string]: any }
 
 export interface ContextOptions {
-  /** Header name to extract the tracing id from*/
+  /** Header name to extract the tracing id from */
   headerName?: string;
-  extractKeyValuePairs?: () => KeyValuePair;
+  extractKeyValuePairs?: (req?: Request) => KeyValuePair;
   generateTraceId?: () => string;
 }
 
@@ -30,8 +29,6 @@ export interface ContextType {
   headerName: string;
 }
 
-
-
 export default function Context(options: ContextOptions): express.RequestHandler {
   const generateTraceId = options.generateTraceId ?? uuid.v4
   const extractKeyValuePairs = options.extractKeyValuePairs ?? function () { return {} }
@@ -39,7 +36,7 @@ export default function Context(options: ContextOptions): express.RequestHandler
     const headerName = options.headerName ?? 'SMK-TRACE-ID'
     req.context = {
       traceId: (req.get(headerName) ?? generateTraceId()),
-      values: extractKeyValuePairs(),
+      values: extractKeyValuePairs(req),
       headerName: headerName
     }
     next()
@@ -63,7 +60,7 @@ class ContextProviderClass {
       const headerName = options.headerName ?? 'SMK-TRACE-ID'
       const context = {
         traceId: (req.get(headerName) ?? generateTraceId()),
-        values: extractKeyValuePairs(),
+        values: extractKeyValuePairs(req),
         headerName: headerName
       }
       req.context = context
@@ -76,7 +73,7 @@ class ContextProviderClass {
 
 export const ContextProvider = new ContextProviderClass()
 
-export function fetch(url: RequestInfo, context?: ContextType, init?: RequestInit) {
+export function fetch(url: RequestInfo, context?: ContextType, init?: RequestInit): Promise<Response> {
   const headers: HeaderInit = {
     ...init?.headers
   }

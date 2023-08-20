@@ -3,9 +3,7 @@ import { ContextProvider, fetch } from '../context'
 
 const app = Express()
 
-
 app.use(ContextProvider.getMiddleware({ headerName: 'TEST' }))
-
 
 const model = async (value: number) => {
   const context1 = ContextProvider.getContext()
@@ -14,7 +12,6 @@ const model = async (value: number) => {
   await moreWork()
   return va
 }
-
 
 const moreWork = async () => {
   const context1 = ContextProvider.getContext()
@@ -26,8 +23,6 @@ app.get('/', async (req, res) => {
   const val = await model(value)
   res.send(val.toString())
 })
-
-
 
 app.listen(8080, () => {
   console.log('server start')
