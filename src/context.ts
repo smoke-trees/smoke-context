@@ -61,11 +61,13 @@ class ContextProviderClass {
     const extractKeyValuePairs = options.extractKeyValuePairs ?? function () { return {} }
     return (req: express.Request, res: express.Response, next: express.NextFunction) => {
       const headerName = options.headerName ?? 'SMK-TRACE-ID'
+      const traceId = req.get(headerName) ?? generateTraceId()
       const context = {
-        traceId: (req.get(headerName) ?? generateTraceId()),
+        traceId: (traceId),
         values: extractKeyValuePairs(req),
         headerName: headerName
       }
+      res.set('x-context-id', traceId)
       req.context = context
       this.asyncLocalStorage.run(context, () => {
         next()
