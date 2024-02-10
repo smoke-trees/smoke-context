@@ -13,18 +13,22 @@ declare global {
 }
 /* eslint-enable */
 
-export type KeyValuePair = { [key: string]: any }
+/* eslint-disable */
+declare namespace SmokeContext {
+  export interface KeyValuePair { [key: string]: any }
+}
+/* eslint-enable */
 
 export interface ContextOptions {
   /** Header name to extract the tracing id from */
   headerName?: string;
-  extractKeyValuePairs?: (req?: Request) => KeyValuePair;
+  extractKeyValuePairs?: (req?: Request) => SmokeContext.KeyValuePair;
   generateTraceId?: () => string;
 }
 
 export interface ContextType {
   traceId: string;
-  values: KeyValuePair
+  values: SmokeContext.KeyValuePair
   headerName: string;
 }
 

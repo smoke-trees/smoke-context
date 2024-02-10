@@ -1,6 +1,6 @@
 import { ContextType } from '../../context'
 
-export { }
+// export { }
 
 declare global {
   namespace Express {
