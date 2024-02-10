@@ -1,36 +1,8 @@
 import { AsyncLocalStorage } from 'async_hooks'
-import express, { Request } from 'express'
+import express from 'express'
 import NodeFetch, { HeaderInit, RequestInfo, RequestInit, Response } from 'node-fetch'
 import * as uuid from 'uuid'
-
-/* eslint-disable */
-declare global {
-  namespace express {
-    export interface Request {
-      context: ContextType
-    }
-  }
-}
-/* eslint-enable */
-
-/* eslint-disable */
-declare namespace SmokeContext {
-  export interface KeyValuePair { [key: string]: any }
-}
-/* eslint-enable */
-
-export interface ContextOptions {
-  /** Header name to extract the tracing id from */
-  headerName?: string;
-  extractKeyValuePairs?: (req?: Request) => SmokeContext.KeyValuePair;
-  generateTraceId?: () => string;
-}
-
-export interface ContextType {
-  traceId: string;
-  values: SmokeContext.KeyValuePair
-  headerName: string;
-}
+import { ContextOptions, ContextType } from './index'
 
 export default function Context(options: ContextOptions): express.RequestHandler {
   const generateTraceId = options.generateTraceId ?? uuid.v4
@@ -99,3 +71,5 @@ export function fetch(url: RequestInfo, context?: ContextType, init?: RequestIni
     headers: headers
   })
 }
+
+export { ContextType, ContextOptions }
